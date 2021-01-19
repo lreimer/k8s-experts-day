@@ -22,20 +22,27 @@ $ kubectl delete -f kustomized/overlays/int/
 ```bash
 # see https://www.pulumi.com/docs/get-started/kubernetes/
 $ brew install pulumi
+$ pulumi plugin install resource kubernetes v2.5.1
 
 # using TypeScript as language
 $ mkdir -p pulumi-demo-ts && cd pulumi-demo-ts
 $ pulumi new kubernetes-typescript
 
-$ cp nginx-deployment.yaml .
+$ pulumi up
+$ pulumi destroy
+
+$ cp ../nginx-deployment.yaml .
 $ kube2pulumi typescript -f nginx-deployment.yaml
 
 # using Go as language
 $ mkdir -p pulumi-demo-go && cd pulumi-demo-go
 $ pulumi new kubernetes-go
 
-$ cp nginx-deployment.yaml .
-$ kube2pulumi typescript -f nginx-deployment.yaml
+$ pulumi up
+$ pulumi destroy
+
+$ cp ../nginx-deployment.yaml .
+$ kube2pulumi go -f nginx-deployment.yaml
 ```
 
 ## Using Kubernetes during Continuous Integration
