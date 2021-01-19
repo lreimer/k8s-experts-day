@@ -1,0 +1,7 @@
+domain: qaware.de
+repo: github.com/lreimer/k8s-experts-day/operator-demo
+resources:
+- group: k8s
+  kind: Demo
+  version: v1
+version: "2"

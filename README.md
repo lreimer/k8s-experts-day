@@ -167,7 +167,34 @@ $ curl -X GET $APISERVER/apis/k8s.qaware.de/v1alpha1/watch/supersecrets
 # see https://github.com/lreimer/graal-operators
 # see https://github.com/lreimer/go-for-operations
 
+# create operator project using SDK
+$ mkdir -p operator-demo && cd operator-demo
+$ operator-sdk init --project-version="2" --domain qaware.de --license none --owner "Mario-Leander Reimer" --plugins go.kubebuilder.io/v2 --repo github.com/lreimer/k8s-experts-day/operator-demo
+$ operator-sdk create api --group k8s --version v1 --kind Demo --resource=true --controller=true
 
+# build and install CRD
+$ make install
+$ kubectl get crds
+$ kubectl describe crd demoes.k8s.qaware.de  
+
+# first run
+$ make run ENABLE_WEBHOOKS=false
+$ kubectl apply -f config/samples/k8s_v1_demo.yaml
+$ kubectl delete -f config/samples/k8s_v1_demo.yaml
+
+# edit api/v1/demo_types.go to modify CRD
+$ make generate manifests
+$ make install
+$ kubectl describe crd demoes.k8s.qaware.de  
+
+# download test harness and perform release
+# see https://sdk.operatorframework.io/docs/building-operators/golang/references/envtest-setup/
+$ curl https://raw.githubusercontent.com/kubernetes-sigs/controller-runtime/master/hack/setup-envtest.sh -o setup-envtest.sh
+$ chmod +x setup-envtest.sh
+
+$ make docker-build docker-push
+$ make deploy 
+$ kubectl get all -n operator-demo-system
 ```
 
 ## Maintainer
