@@ -195,6 +195,7 @@ $ chmod +x setup-envtest.sh
 $ make docker-build docker-push
 $ make deploy 
 $ kubectl get all -n operator-demo-system
+$ make undeploy
 ```
 
 ## Maintainer
