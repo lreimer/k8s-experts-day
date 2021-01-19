@@ -1,0 +1,12 @@
+apiVersion: k8s.qaware.de/v1alpha1
+kind: Microservice
+metadata:
+  name: microservice-example
+  labels:
+    app: nginx
+spec:
+  image: nginx:1.19.4-alpine
+  replicas: 2
+  serviceType: LoadBalancer
+  ports:
+    - 80

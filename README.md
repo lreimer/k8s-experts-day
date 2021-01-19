@@ -45,7 +45,7 @@ $ cp ../nginx-deployment.yaml .
 $ kube2pulumi go -f nginx-deployment.yaml
 ```
 
-## Using Kubernetes during Continuous Integration
+## Using Kubernetes for CI/CD
 
 ```bash
 # Continuous Load Testing with K6 on Kubernetes
@@ -96,13 +96,13 @@ $ kubectl tkn pipelinerun logs --last -f
 ## Using the Kubernetes API on the CLI
 
 ```bash
+# see https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.19/
+
 $ kubectl proxy
 $ APISERVER=http://127.0.0.1:8001
 
 $ curl -X GET $APISERVER/api
 $ curl -X GET $APISERVER/apis
-
-# see https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.19/
 
 # global watches
 $ curl -X GET $APISERVER/api/v1/watch/events
@@ -136,6 +136,38 @@ $ curl -X GET $APISERVER/api --header "Authorization: Bearer $TOKEN" --insecure
 $ cd event-watcher-java/
 $ ./gradlew clean ass
 $ ./gradlew run
+```
+
+## Defining and Using Custom Resources in Kubernetes
+
+```bash
+# see https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/
+# see https://kubernetes.io/docs/tasks/extend-kubernetes/custom-resources/custom-resource-definitions/
+
+$ kubectl apply -f custom-resources/microservice-crd.yaml
+$ kubectl get crds
+$ kubectl apply -f custom-resources/microservice-example.yaml
+$ kubectl get yservice
+
+$ kubectl describe yservice microservice-example
+$ curl -X GET $APISERVER/apis/k8s.qaware.de/v1alpha1/watch/microservices
+
+$ kubectl apply -f custom-resources/supersecret-crd.yaml
+$ kubectl get crds
+$ kubectl apply -f custom-resources/supersecret-example.yaml
+$ kubectl get supersecrets
+
+$ kubectl describe supersecret supersecret-example
+$ curl -X GET $APISERVER/apis/k8s.qaware.de/v1alpha1/watch/supersecrets
+```
+
+## Implementing Custom Controllers aka Operators
+
+```bash
+# see https://github.com/lreimer/graal-operators
+# see https://github.com/lreimer/go-for-operations
+
+
 ```
 
 ## Maintainer

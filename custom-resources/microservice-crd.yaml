@@ -1,0 +1,43 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  # name must match the spec fields below, and be in the form: <plural>.<group>
+  name: microservices.k8s.qaware.de
+spec:
+  # group name to use for REST API: /apis/<group>/<version>
+  group: k8s.qaware.de
+  versions:
+    - name: v1alpha1
+      # Each version can be enabled/disabled by Served flag.
+      served: true
+      # One and only one version must be marked as the storage version.
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                replicas:
+                  type: integer
+                image:
+                  type: string
+                ports:
+                  type: array
+                  items:
+                    type: integer
+                serviceType:
+                  type: string
+  scope: Namespaced
+  names:
+    # kind is normally the CamelCased singular type, the resource manifests will use this
+    kind: Microservice
+    listKind: MicroserviceList
+    # plural name to be used in the URL: /apis/<group>/<version>/<plural>
+    plural: microservices
+    # singular name to be used as an alias on the CLI and for display
+    singular: microservice
+    # shortNames allow shorter string to match your resource on the CLI
+    shortNames:
+      - yservice
