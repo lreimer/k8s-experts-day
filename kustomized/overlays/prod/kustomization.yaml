@@ -1,0 +1,25 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+commonLabels:
+  environment: prod
+
+namePrefix: prod-
+
+bases:
+  # you can also specify a Git repo URL here
+  - ../../base
+
+patchesStrategicMerge:
+  - 4-replicas.yaml
+  - probes.yaml
+  - loadbalancer.yaml
+
+configMapGenerator:
+  - name: nginx-configmap
+    behavior: patchesStrategicMerge
+    files:
+      - index.html
+    literals:
+      - HOST=www.qaware.de
+      - PORT=443

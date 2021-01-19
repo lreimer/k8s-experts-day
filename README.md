@@ -2,7 +2,24 @@
 
 Demo repository for the Kubernetes Experts Day session at ContainerConf 2020/21.
 
+## Declarative Management of Kubernetes Objects Using Kustomize
+
+```bash
+# see https://kustomize.io
+# see https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/
+
+# preview of the Kustomize output
+$ kubectl kustomize kustomized/base/
+$ kubectl kustomize kustomized/overlays/int/
+
+# apply the Kustomized output
+$ kubectl apply -f kustomized/overlays/int/
+$ kubectl delete -f kustomized/overlays/int/
+```
+
 ## Using Kubernetes during Continuous Integration
+
+
 
 ## Using the Kubernetes API on the CLI
 
@@ -43,6 +60,10 @@ $ curl -X GET $APISERVER/api --header "Authorization: Bearer $TOKEN" --insecure
 # see https://kubernetes.io/docs/reference/using-api/client-libraries/
 # see https://github.com/kubernetes/client-go
 # see https://github.com/kubernetes-client/java
+
+$ cd event-watcher-java/
+$ ./gradlew clean ass
+$ ./gradlew run
 ```
 
 ## Maintainer

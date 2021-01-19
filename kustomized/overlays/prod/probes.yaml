@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec:
+  template:    
+    spec:
+      containers:
+      - name: nginx
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 30
+          periodSeconds: 30
+        readinessProbe:
+          initialDelaySeconds: 1
+          periodSeconds: 5
+          httpGet:
+            path: /
+            port: 80
+        
