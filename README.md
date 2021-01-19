@@ -98,6 +98,12 @@ $ kubectl tkn pipelinerun logs --last -f
 ```bash
 # see https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.19/
 
+$ kubectl get events
+$ kubectl get events -o json
+
+$ kubectl get events --field-selector type!=Normal
+$ kubectl get events --field-selector type=Normal,involvedObject.kind=Pod
+
 $ kubectl proxy
 $ APISERVER=http://127.0.0.1:8001
 
