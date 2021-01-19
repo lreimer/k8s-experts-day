@@ -17,9 +17,49 @@ $ kubectl apply -f kustomized/overlays/int/
 $ kubectl delete -f kustomized/overlays/int/
 ```
 
+## Imperative Management of Kubernetes Objects Using Pulumi
+
+```bash
+# see https://www.pulumi.com/docs/get-started/kubernetes/
+$ brew install pulumi
+
+# using TypeScript as language
+$ mkdir -p pulumi-demo-ts && cd pulumi-demo-ts
+$ pulumi new kubernetes-typescript
+
+$ cp nginx-deployment.yaml .
+$ kube2pulumi typescript -f nginx-deployment.yaml
+
+# using Go as language
+$ mkdir -p pulumi-demo-go && cd pulumi-demo-go
+$ pulumi new kubernetes-go
+
+$ cp nginx-deployment.yaml .
+$ kube2pulumi typescript -f nginx-deployment.yaml
+```
+
 ## Using Kubernetes during Continuous Integration
 
+```bash
+# Continuous Load Testing with K6 on Kubernetes
+# see https://github.com/lreimer/continuous-k6k8s
 
+# next you can deploy the K6 stack with InfluxDB and Grafana
+$ kubectl apply -f continuous-k6k8s.yaml
+
+# open Grafana and import on of these K6 load test dashboards
+# - see https://grafana.com/dashboards/2587
+# - see https://grafana.com/grafana/dashboards/4411
+$ open http://localhost:3000
+
+# run adhoc tests as a simple pod
+# be sure to pass the --restart flag, otherwise the containers gets restarted
+$ kubectl run k6-nginx-test --image lreimer/k6-nginx-test --restart=Never --attach
+$ kubectl delete pod/k6-nginx-test
+
+# Continuous Security Tests with ZAP on Kubernetes
+# https://github.com/lreimer/continuous-zapk8s
+```
 
 ## Using the Kubernetes API on the CLI
 
