@@ -31,16 +31,22 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nginx-deployment
+  labels:
+    killpod/enabled: "true"
+    killpod/application: nginx
+    killpod/delay: "30"
+    killpod/amount: "1"
 spec:
   selector:
     matchLabels:
       app: nginx
-  replicas: 1
+  replicas: 2
   template:
     metadata:
       labels:
         app: nginx
         environment: integration
+        killpod/application: nginx
     spec:
       containers:
       - name: nginx
