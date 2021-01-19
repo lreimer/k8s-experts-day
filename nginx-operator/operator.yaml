@@ -1,0 +1,27 @@
+apiVersion: kudo.dev/v1beta1
+name: "nginx-operator"
+operatorVersion: "1.0.0"
+appVersion: "1.7.9"
+kubernetesVersion: 1.13.0
+maintainers:
+  - name: Mario-Leander Reimer
+    email: <mario-leander.reimer@qaware.de>
+url: https://kudo.dev
+tasks:
+  - name: app
+    kind: Apply
+    spec:
+      resources:
+        - configmap.yaml
+        - deployment.yaml
+        - service.yaml
+plans:
+  deploy:
+    strategy: serial
+    phases:
+      - name: main
+        strategy: parallel
+        steps:
+          - name: everything
+            tasks:
+              - app

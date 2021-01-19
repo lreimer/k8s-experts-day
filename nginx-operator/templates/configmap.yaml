@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-configmap
+data:
+  index.html: |
+    <!DOCTYPE html>
+    <html lang="de">
+    <head>
+        <title>Kubernetes Experts Day Microservice Demo</title>
+    </head>
+    <body>
+        <h1>Kubernetes Experts Day Microservice Demo</h1>
+    </body>
+    </html>

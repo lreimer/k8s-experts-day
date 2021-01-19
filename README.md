@@ -167,7 +167,7 @@ $ kubectl describe supersecret supersecret-example
 $ curl -X GET $APISERVER/apis/k8s.qaware.de/v1alpha1/watch/supersecrets
 ```
 
-## Implementing Custom Controllers aka Operators
+## Developing Custom Controllers with the Operator SDK
 
 ```bash
 # see https://github.com/lreimer/graal-operators
@@ -202,6 +202,16 @@ $ make docker-build docker-push
 $ make deploy 
 $ kubectl get all -n operator-demo-system
 $ make undeploy
+```
+
+## Developing Operators with Kudo
+
+```bash
+$ kubectl krew install kudo
+$ kubectl kudo init --unsafe-self-signed-webhook-ca
+
+$ kubectl kudo install ./nginx-operator
+$ kubectl kudo get instances
 ```
 
 ## Maintainer

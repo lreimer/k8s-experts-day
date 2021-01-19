@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    killpod/enabled: "true"
+    killpod/application: nginx
+    killpod/delay: "30"
+    killpod/amount: "1"
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  replicas: {{ .Params.replicas }} # tells deployment to run 2 pods matching the template
+  template:
+    metadata:
+      labels:
+        app: nginx
+        environment: integration
+        killpod/application: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.19.4-alpine
+        ports:
+        - containerPort: 80
+        volumeMounts:
+          - name: html-files
+            readOnly: true
+            mountPath: /usr/share/nginx/html
+      volumes:
+        - name: html-files
+          configMap:
+            name: nginx-configmap
+            items:
+              - key: index.html
+                path: index.html
