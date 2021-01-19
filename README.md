@@ -66,6 +66,31 @@ $ kubectl delete pod/k6-nginx-test
 
 # Continuous Security Tests with ZAP on Kubernetes
 # https://github.com/lreimer/continuous-zapk8s
+
+# Cloud Native CI/CD with Tekton
+# see https://tekton.dev
+$ kubectl apply -f https://storage.googleapis.com/tekton-releases/pipeline/latest/release.yaml
+$ kubectl apply -f https://github.com/tektoncd/dashboard/releases/latest/download/tekton-dashboard-release.yaml
+$ kubectl get pods -n tekton-pipelines
+
+$ kubectl -n tekton-pipelines port-forward svc/tekton-dashboard 9097:9097
+$ open http://localhost:9097
+
+$ kubectl apply -f tekton-demos/task-hello.yaml
+$ kubectl tkn task start hello
+$ kubectl tkn taskrun logs --last -f 
+
+$ kubectl apply -f task-goodbye.yaml
+$ kubectl tkn task start goodbye 
+$ kubectl tkn taskrun logs --last -f 
+
+$ kubectl apply -f tekton-demos/pipeline-hello-goodbye.yaml
+$ kubectl tkn pipeline start hello-goodbye
+$ kubectl tkn pipelinerun logs --last -f 
+
+# use Tekton triggers to run pipelines
+# see https://tekton.dev/docs/triggers/install/
+# see https://github.com/tektoncd/triggers/tree/v0.9.1/docs/getting-started
 ```
 
 ## Using the Kubernetes API on the CLI
