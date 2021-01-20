@@ -13,8 +13,8 @@ $ kubectl kustomize kustomized/base/
 $ kubectl kustomize kustomized/overlays/int/
 
 # apply the Kustomized output
-$ kubectl apply -f kustomized/overlays/int/
-$ kubectl delete -f kustomized/overlays/int/
+$ kubectl apply -k kustomized/overlays/int/
+$ kubectl delete -k kustomized/overlays/int/
 ```
 
 ## Imperative Management of Kubernetes Objects Using Pulumi
