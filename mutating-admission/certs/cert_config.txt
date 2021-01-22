@@ -9,7 +9,7 @@ keyUsage = nonRepudiation, digitalSignature, keyEncipherment
 extendedKeyUsage = serverAuth
 
 [ alt_names ]
-DNS.1 = validating-admission
-DNS.2 = validating-admission.default
-DNS.3 = validating-admission.default.svc
-DNS.4 = validating-admission.default.svc.cluster.local
+DNS.1 = mutating-admission
+DNS.2 = mutating-admission.default
+DNS.3 = mutating-admission.default.svc
+DNS.4 = mutating-admission.default.svc.cluster.local

@@ -2,36 +2,36 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: validating-admission
+  name: mutating-admission
   namespace: default
   labels:
-    name: validating-admission
+    name: mutating-admission
 spec:
   ports:
   - name: webhook
     port: 443
     targetPort: 8080
   selector:
-    name: validating-admission 
+    name: mutating-admission 
 ---
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
-  name: validating-admission
+  name: mutating-admission
   namespace: default
   labels:
-    name: validating-admission
+    name: mutating-admission
 spec:
   replicas: 1
   template:
     metadata:
-      name: validating-admission 
+      name: mutating-admission 
       labels:
-        name: validating-admission
+        name: mutating-admission
     spec:
       containers:
         - name: webhook
-          image: lreimer/validating-admission:1.0.0
+          image: lreimer/mutating-admission:1.0.0
           imagePullPolicy: Always
           args:
             - -alsologtostderr
@@ -56,19 +56,19 @@ spec:
       volumes:
         - name: webhook-certs
           secret:
-            secretName: validating-admission
+            secretName: mutating-admission
         - name: logs
           emptyDir: {}
 ---
 apiVersion: admissionregistration.k8s.io/v1beta1
-kind: ValidatingWebhookConfiguration
+kind: MutatingWebhookConfiguration
 metadata:
-  name: validating-admission
+  name: mutating-admission
 webhooks:
-  - name: validating-admission.qaware.de
+  - name: mutating-admission.qaware.de
     clientConfig:
       service:
-        name: validating-admission
+        name: mutating-admission
         namespace: default
         path: "/validate"
       caBundle: "${CA_BUNDLE}"
