@@ -226,18 +226,22 @@ $ kubectl kudo get instances
 # validating admission controller
 $ cd validating-admission
 
+# generate CA and certificates, create as secret (only once)
 $ ./gen_certs.sh
 $ kubectl create secret generic validating-admission-cert -n default --from-file=key.pem=certs/validating-key.pem --from-file=cert.pem=certs/validating-crt.pem
 
-
+$ make deploy
+$ kubectl apply -f manifest.yaml
 
 # mutating admission controller
 $ cd mutating-admission
 
+# generate CA and certificates, create as secret (only once)
 $ ./gen_certs.sh
 $ kubectl create secret generic mutating-admission-cert -n default --from-file=key.pem=certs/mutating-key.pem --from-file=cert.pem=certs/mutating-crt.pem
 
-
+$ make deploy
+$ kubectl apply -f manifest.yaml
 ```
 
 ## Maintainer
