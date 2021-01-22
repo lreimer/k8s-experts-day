@@ -1,0 +1,80 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: validating-admission
+  namespace: default
+  labels:
+    name: validating-admission
+spec:
+  ports:
+  - name: webhook
+    port: 443
+    targetPort: 8080
+  selector:
+    name: validating-admission 
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: validating-admission
+  namespace: default
+  labels:
+    name: validating-admission
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: validating-admission 
+      labels:
+        name: validating-admission
+    spec:
+      containers:
+        - name: webhook
+          image: lreimer/validating-admission:1.0.0
+          imagePullPolicy: Always
+          args:
+            - -alsologtostderr
+            - --log_dir=/
+            - -v=10
+            - 2>&1
+          resources:
+            limits:
+              memory: 50Mi
+              cpu: 300m
+            requests:
+              memory: 00Mi
+              cpu: 300m
+          volumeMounts:
+            - name: webhook-certs
+              mountPath: /etc/certs
+              readOnly: true
+            - name: logs
+              mountPath: /tmp
+          securityContext:
+            readOnlyRootFilesystem: true
+      volumes:
+        - name: webhook-certs
+          secret:
+            secretName: validating-admission
+        - name: logs
+          emptyDir: {}
+---
+apiVersion: admissionregistration.k8s.io/v1beta1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: validating-admission
+webhooks:
+  - name: validating-admission.qaware.de
+    clientConfig:
+      service:
+        name: validating-admission
+        namespace: default
+        path: "/validate"
+      caBundle: "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUVBakNDQXVvQ0NRRGNpREdvSEVpdjZ6QU5CZ2txaGtpRzl3MEJBUTBGQURDQndqRUxNQWtHQTFVRUJoTUMKUkVVeEVEQU9CZ05WQkFnTUIwSmhkbUZ5YVdFeEVqQVFCZ05WQkFjTUNWSnZjMlZ1YUdWcGJURU9NQXdHQTFVRQpFUXdGT0RNd01qSXhIakFjQmdOVkJBa01GVUp5dzRQQ3ZHTnJaVzV6ZEhKaHc0UENuMlVnTVRFVU1CSUdBMVVFCkNnd0xVVUYzWVhKbElFZHRZa2d4RGpBTUJnTlZCQXNNQlVkQ0xVMU1NUkl3RUFZRFZRUUREQWx4WVhkaGNtVXUKWkdVeEl6QWhCZ2txaGtpRzl3MEJDUUVXRkhGaGQyRnlaUzF2YzNOQWNXRjNZWEpsTG1SbE1CNFhEVEl4TURFeQpNakl3TXpReU5sb1hEVEl4TURJeU1USXdNelF5Tmxvd2djSXhDekFKQmdOVkJBWVRBa1JGTVJBd0RnWURWUVFJCkRBZENZWFpoY21saE1SSXdFQVlEVlFRSERBbFNiM05sYm1obGFXMHhEakFNQmdOVkJCRU1CVGd6TURJeU1SNHcKSEFZRFZRUUpEQlZDY3NPRHdyeGphMlZ1YzNSeVljT0R3cDlsSURFeEZEQVNCZ05WQkFvTUMxRkJkMkZ5WlNCSApiV0pJTVE0d0RBWURWUVFMREFWSFFpMU5UREVTTUJBR0ExVUVBd3dKY1dGM1lYSmxMbVJsTVNNd0lRWUpLb1pJCmh2Y05BUWtCRmhSeFlYZGhjbVV0YjNOelFIRmhkMkZ5WlM1a1pUQ0NBU0l3RFFZSktvWklodmNOQVFFQkJRQUQKZ2dFUEFEQ0NBUW9DZ2dFQkFNQUo4NlpuN2JjTjM3L0h0aUFvdWZ5VXIxZDdlTHk1QSt6eXIwYWwrN0tmQkJIawpJQURHOTlvY2JLcmRpZ0dQM3Uvejd4V0V4RzQzMExiZmxOK2RXMkNTdTJlalNHdklDRUtCV1F5SW9ZWjQxa0JyCmJqVEovcXhrY0NvdDQ4MmxWSHpLQ0dFZW10NmVrSDNmQTlqMHlvZytWTUh1ZEN4Q05FWHhicUhvaHRJRzYxQzUKYlFncmxtWk9PU2czL3VydUdPYklBU1pxWkRNcUtnWWkrcm5HM2hOeHdZSkZHR2pKQjNmdEt6a3ZGU3FNek1mSwprNGYxOUhHdERPckN3bzg3WE1acGpOYXJPcjJhZU5DQnJxN3VPYy9qRmFGaHpRekJZSEpKM250VUZGYzZSSElBCmxrSkhad0pSU0p2YU1MYXNaMzRUeWhTVDhBQnZVd09vOEEweU5wMENBd0VBQVRBTkJna3Foa2lHOXcwQkFRMEYKQUFPQ0FRRUFWTi9Hbmg5N1VnMmRPbmNVZmx1ZndqdTM4L3NGMldrK2dwR0tJaUlOanRadW9aRGFwYVg1ekkyZwo1aVlHVUNGUW52TFpkY0hqdUVxcFM2OXd5N1BxZEgxT2FQRkpzcGNLQ0xpcGZmOE9HcWt3bjJ3ZFRocHk5WVB5CnJEUHV3bEpKdTN3WStqeUdZT2twRTBGcnZ2YUtDNUZseXR0S0RzbUJlZnNzajZjdTVEcTVGQTRrZGphSERWNGgKcVBuQmRCcDBtZUZqYnZ1TUpSeVpvTjIwQWcxb0VKZ0h0N1hDY0ZNMHNTb3J0MFpqWVpIay9RZ29NNVFTVUNpegpoVVpBd1VPOTBSV0gycVBWc1dGZi9vUHJRQUhzRlNhUTJDa2c2Y29kVFprV1hEUjYzMGtGQjQyRTdibXF4enF2CmZoS3JPU1hzK3hCMUxCanJPNTJZZlFYWXlRaGZldz09Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K"
+    rules:
+      - operations: ["CREATE","UPDATE"]
+        apiGroups: [""]
+        apiVersions: ["v1"]
+        resources: ["pods"]
+    failurePolicy: Ignore
