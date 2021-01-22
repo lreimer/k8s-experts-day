@@ -214,6 +214,21 @@ $ kubectl kudo install ./nginx-operator
 $ kubectl kudo get instances
 ```
 
+## Developing Admission Controllers
+
+![](https://d33wubrfki0l68.cloudfront.net/af21ecd38ec67b3d81c1b762221b4ac777fcf02d/7c60e/images/blog/2019-03-21-a-guide-to-kubernetes-admission-controllers/admission-controller-phases.png)
+
+```bash
+# see https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/
+# see https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/
+# see https://kubernetes.io/blog/2019/03/21/a-guide-to-kubernetes-admission-controllers/
+
+# validating admission controller
+
+# mutating admission controller
+
+```
+
 ## Maintainer
 
 M.-Leander Reimer (@lreimer), <mario-leander.reimer@qaware.de>
