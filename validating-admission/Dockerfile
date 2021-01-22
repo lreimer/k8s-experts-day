@@ -1,4 +1,4 @@
-FROM golang:1.15-stretch AS build-env
+FROM golang:1.15-buster AS build-env
 RUN mkdir -p /go/src/github.com/lreimer/k8s-experts-day/validating-admission
 WORKDIR /go/src/github.com/lreimer/k8s-experts-day/validating-admission
 COPY  . .

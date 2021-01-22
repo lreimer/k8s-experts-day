@@ -14,7 +14,7 @@ spec:
   selector:
     name: validating-admission 
 ---
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: validating-admission
@@ -23,6 +23,9 @@ metadata:
     name: validating-admission
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      name: validating-admission
   template:
     metadata:
       name: validating-admission 
@@ -31,7 +34,7 @@ spec:
     spec:
       containers:
         - name: webhook
-          image: lreimer/validating-admission:1.0.0
+          image: lreimer/validating-admission:latest
           imagePullPolicy: Always
           args:
             - -alsologtostderr
@@ -40,10 +43,10 @@ spec:
             - 2>&1
           resources:
             limits:
-              memory: 50Mi
+              memory: 100Mi
               cpu: 300m
             requests:
-              memory: 100Mi
+              memory: 50Mi
               cpu: 300m
           volumeMounts:
             - name: webhook-certs
@@ -60,12 +63,12 @@ spec:
         - name: logs
           emptyDir: {}
 ---
-apiVersion: admissionregistration.k8s.io/v1beta1
+apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingWebhookConfiguration
 metadata:
-  name: validating-admission
+  name: validating-admission.default.svc
 webhooks:
-  - name: validating-admission.qaware.de
+  - name: validating-admission.default.svc
     clientConfig:
       service:
         name: validating-admission
@@ -78,3 +81,6 @@ webhooks:
         apiVersions: ["v1"]
         resources: ["pods"]
     failurePolicy: Ignore
+    admissionReviewVersions: ["v1", "v1beta1"]
+    sideEffects: None
+    timeoutSeconds: 10

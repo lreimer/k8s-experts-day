@@ -14,7 +14,7 @@ spec:
   selector:
     name: validating-admission 
 ---
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: validating-admission
@@ -23,6 +23,9 @@ metadata:
     name: validating-admission
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      name: validating-admission
   template:
     metadata:
       name: validating-admission 
@@ -31,7 +34,7 @@ spec:
     spec:
       containers:
         - name: webhook
-          image: lreimer/validating-admission:1.0.0
+          image: lreimer/validating-admission:latest
           imagePullPolicy: Always
           args:
             - -alsologtostderr
@@ -40,10 +43,10 @@ spec:
             - 2>&1
           resources:
             limits:
-              memory: 50Mi
+              memory: 100Mi
               cpu: 300m
             requests:
-              memory: 100Mi
+              memory: 50Mi
               cpu: 300m
           volumeMounts:
             - name: webhook-certs
@@ -60,21 +63,24 @@ spec:
         - name: logs
           emptyDir: {}
 ---
-apiVersion: admissionregistration.k8s.io/v1beta1
+apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingWebhookConfiguration
 metadata:
-  name: validating-admission
+  name: validating-admission.default.svc
 webhooks:
-  - name: validating-admission.qaware.de
+  - name: validating-admission.default.svc
     clientConfig:
       service:
         name: validating-admission
         namespace: default
         path: "/validate"
-      caBundle: "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUVBakNDQXVvQ0NRRFpiTnZmQ1dqaGh6QU5CZ2txaGtpRzl3MEJBUTBGQURDQndqRUxNQWtHQTFVRUJoTUMKUkVVeEVEQU9CZ05WQkFnTUIwSmhkbUZ5YVdFeEVqQVFCZ05WQkFjTUNWSnZjMlZ1YUdWcGJURU9NQXdHQTFVRQpFUXdGT0RNd01qSXhIakFjQmdOVkJBa01GVUp5dzRQQ3ZHTnJaVzV6ZEhKaHc0UENuMlVnTVRFVU1CSUdBMVVFCkNnd0xVVUYzWVhKbElFZHRZa2d4RGpBTUJnTlZCQXNNQlVkQ0xVMU1NUkl3RUFZRFZRUUREQWx4WVhkaGNtVXUKWkdVeEl6QWhCZ2txaGtpRzl3MEJDUUVXRkhGaGQyRnlaUzF2YzNOQWNXRjNZWEpsTG1SbE1CNFhEVEl4TURFeQpNakl3TkRVeU9Wb1hEVEl4TURJeU1USXdORFV5T1Zvd2djSXhDekFKQmdOVkJBWVRBa1JGTVJBd0RnWURWUVFJCkRBZENZWFpoY21saE1SSXdFQVlEVlFRSERBbFNiM05sYm1obGFXMHhEakFNQmdOVkJCRU1CVGd6TURJeU1SNHcKSEFZRFZRUUpEQlZDY3NPRHdyeGphMlZ1YzNSeVljT0R3cDlsSURFeEZEQVNCZ05WQkFvTUMxRkJkMkZ5WlNCSApiV0pJTVE0d0RBWURWUVFMREFWSFFpMU5UREVTTUJBR0ExVUVBd3dKY1dGM1lYSmxMbVJsTVNNd0lRWUpLb1pJCmh2Y05BUWtCRmhSeFlYZGhjbVV0YjNOelFIRmhkMkZ5WlM1a1pUQ0NBU0l3RFFZSktvWklodmNOQVFFQkJRQUQKZ2dFUEFEQ0NBUW9DZ2dFQkFMMldHdHQ1SXJ6cUw0NGl3SEs1TS90cUZpYVAydmZBZGhhcG9GVUhxNnJMb0dzcQp2bG1tQUNFdGlMSHMvRHNCcC8vYmR4MXJJWU53eFM2bmQzQmh1NEJmbEdvSTlaV0dNRkRZYi8wTHFDN2pqRG1aCmlXL0lUYzNvTjBGd1VqaGRlN0FDUFJyY21NbmUyNDVBTlBEdW5RanRNK1ZlRE5GVDlFbVBFeEpNNGpic2ZLV0EKbEFUdkdhUVBQQUlYaDdNUko5NW40RWNoZmtKRUhJYUg4NEVZRFA0dnJtY2tnZmVRMkNaM29YSmNrK213d0dBRQphZjEwT1Zpc2JlN2F4UzJ0VDlhenhYNGxXQUN4czJtaGN1SFFsMnlZR0h3WXRua2xaMG5TY25kV2xpMnc2USsrClNIclBxU2s5Y0I2V2Y0dVF4RjZNYWhuN2tyUys4UEM5TXNjYjltOENBd0VBQVRBTkJna3Foa2lHOXcwQkFRMEYKQUFPQ0FRRUFUZlBibjBxd01KZVpEK1cvSHFLWUVvVXR3S2d3eHFxbmp5Z0pKVnJxd0N2T0pJSDVEL1pMTHF2dwpJZG10TXRKV2FtRjdaWE81UlVQZXovNHorQ09JMHBvOEdvMmJqejQzZkUrL3greEtDU0dObWtUNUxld2ZIUGZhCkpvUGRhTjBLOU43MWF5MlFMRFZjVUxFajVaZ21rdzRyZ3Jyc25WbFFDcFVrNWttZE80Nmdzb1VNY0hUV2dHVU0KWXlJYTdVc2VRNkUzeHRBcVJ3TGR0QmM2RGlBMkJ2Q0NCTHhEa1Q4NXRlUzBCTEhReW1UNlQwUTFHeDFHWDc5WQprRE81VWZjOVpWQm9UZ2MrSk1VYjdWTldqVkJDNk5JRjFNN2lad2RZcTN3TEJ3cUlSMTVpbHMvL3NFQ3VldWVnCmNnU05nOWNVOWR5cThmR2pzQVZoQ1l3Uml6RlBEdz09Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K"
+      caBundle: "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUQrakNDQXVJQ0NRRGRTbWx6ZGMzbHFUQU5CZ2txaGtpRzl3MEJBUTBGQURDQnZqRUxNQWtHQTFVRUJoTUMKUkVVeEVEQU9CZ05WQkFnTUIwSmhkbUZ5YVdFeEVqQVFCZ05WQkFjTUNWSnZjMlZ1YUdWcGJURU9NQXdHQTFVRQpFUXdGT0RNd01qSXhHakFZQmdOVkJBa01FVUp5ZFdWamEyVnVjM1J5WVhOelpTQXhNUlF3RWdZRFZRUUtEQXRSClFYZGhjbVVnUjIxaVNERU9NQXdHQTFVRUN3d0ZSMElnVFV3eEVqQVFCZ05WQkFNTUNYRmhkMkZ5WlM1a1pURWoKTUNFR0NTcUdTSWIzRFFFSkFSWVVjV0YzWVhKbExXOXpjMEJ4WVhkaGNtVXVaR1V3SGhjTk1qRXdNVEl5TWpFMApPVEEzV2hjTk1qRXdNakl4TWpFME9UQTNXakNCdmpFTE1Ba0dBMVVFQmhNQ1JFVXhFREFPQmdOVkJBZ01CMEpoCmRtRnlhV0V4RWpBUUJnTlZCQWNNQ1ZKdmMyVnVhR1ZwYlRFT01Bd0dBMVVFRVF3Rk9ETXdNakl4R2pBWUJnTlYKQkFrTUVVSnlkV1ZqYTJWdWMzUnlZWE56WlNBeE1SUXdFZ1lEVlFRS0RBdFJRWGRoY21VZ1IyMWlTREVPTUF3RwpBMVVFQ3d3RlIwSWdUVXd4RWpBUUJnTlZCQU1NQ1hGaGQyRnlaUzVrWlRFak1DRUdDU3FHU0liM0RRRUpBUllVCmNXRjNZWEpsTFc5emMwQnhZWGRoY21VdVpHVXdnZ0VpTUEwR0NTcUdTSWIzRFFFQkFRVUFBNElCRHdBd2dnRUsKQW9JQkFRQ2pNRFJpYWZNL1dZaTNoQ2VtSUpobjRuS1hHSFVtNlpSS0FDYjdMRFpVSUUyczZ3OThhQjBabnk4MQpGREcyS25SUERGMlFUbmtqU3VEVDB6RjB5NVNjWEhmK2pCdThudHcwbkV6Q05WazZiYmt5aTQ3RmNlNGlqNXBvCllUWml5MEVxQXhmRGU2U3BMTlg0WHhDL2FqVCszVVNDM2pVMWFIOXE3Y0hHYjhTYkVCWTlsUEhkVElVUzhRbWkKSnVwOFpZOVV5QlF0YW9Cbkg4WCtDMGt5RmxLalhtOU1IaFRnQlpsWDdFcHpKTU1pQjB0VHdzLzlZditLNEVNdwpHa1JoY2tmbi9CMjF4U2JwUFdxZTFUSWc2eXJJSndUMkl5cHpBTzUyeU5vWGNVRHAranYvUWw4b2dPNktCMUNJCjFlR2xTNmRjMnBJem1kQ1Z5Z2ltaUNncUlKU0hBZ01CQUFFd0RRWUpLb1pJaHZjTkFRRU5CUUFEZ2dFQkFHWUMKd094ODduTzdHay9YWHBGN2ZtUHZmc3J6VVIvcFRNbzlXOVRTcnp6QUp1UG1ta2VzZ2pTSnM4ZE9NTlY3SlhrVgo3RnRrN25wU24xSTF0eGduU2Y1c0ZVbW5jQjFRQS9oMnFYdVZXalF5ZjE2NHdEVkxmWmkwRGkzTUdkVW92YTg4Cm9SZy9LY1dZS3JaSlhuZUFxOUpSV0VDL0pkQXBibUQ5TlMwazZlYmRmblV1cFVlRVdVMXZkL0JhcU56Zk5JcDcKaXBEVU9BOUNVbjUzWlNGUldOaEpKb09YcDY4NHI4OVN6VDVobUR3SVNxaW5VWFEvd3hYOUgxOFQwWlB3MHMrMQpzVnp2RlpJdzlGd3ptYTB0Zms1QVJTcTVFSTJKZHZWS1ZlZk1mY0NNZi9Na0xqWDZJVFU2ZU5IWDNyQitFWW5mCjR0SVZtRjE5T0c3WDlzUGJCN0E9Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K"
     rules:
       - operations: ["CREATE","UPDATE"]
         apiGroups: [""]
         apiVersions: ["v1"]
         resources: ["pods"]
     failurePolicy: Ignore
+    admissionReviewVersions: ["v1", "v1beta1"]
+    sideEffects: None
+    timeoutSeconds: 10

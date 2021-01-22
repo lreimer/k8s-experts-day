@@ -17,9 +17,9 @@ countryName            = "DE"                     # C=
 stateOrProvinceName    = "Bavaria"                # ST=
 localityName           = "Rosenheim"              # L=
 postalCode             = "83022"                  # L/postalcode=
-streetAddress          = "Brückenstraße 1"        # L/street=
+streetAddress          = "Brueckenstrasse 1"        # L/street=
 organizationName       = "QAware GmbH"            # O=
-organizationalUnitName = "GB-ML"                  # OU=
+organizationalUnitName = "GB ML"                  # OU=
 commonName             = "qaware.de"              # CN=
 emailAddress           = "qaware-oss@qaware.de"   # CN/emailAddress=
 
