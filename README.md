@@ -225,9 +225,18 @@ $ kubectl kudo get instances
 
 # validating admission controller
 $ cd validating-admission
+
 $ ./gen_certs.sh
+$ kubectl create secret generic validating-admission-cert -n default --from-file=key.pem=certs/validating-key.pem --from-file=cert.pem=certs/validating-crt.pem
+
+
 
 # mutating admission controller
+$ cd mutating-admission
+
+$ ./gen_certs.sh
+$ kubectl create secret generic mutating-admission-cert -n default --from-file=key.pem=certs/mutating-key.pem --from-file=cert.pem=certs/mutating-crt.pem
+
 
 ```
 
