@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: validating-admission-deployment
+  labels:
+    app: validating-admission
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: validating-admission
+  template:
+    metadata:
+      labels:
+        app: validating-admission
+    spec:
+      containers:
+      - name: validating-admission
+        image: CONTAINER_IMAGE
+        ports:
+        - containerPort: 8000
+        volumeMounts:
+        - name: validating-admission-tls-secret
+          mountPath: "/tls"
+          readOnly: true        
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"           
+        imagePullPolicy: Always
+      volumes:
+      - name: validating-admission-tls-secret
+        secret:
+          secretName: validating-admission-tls-secret

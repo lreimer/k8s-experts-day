@@ -1,0 +1,26 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: validating-admission-webhook-cert-setup
+spec:
+  template:
+    spec:
+      serviceAccountName: validating-admission-webhook-cert-sa
+      containers:
+      - name: validating-admission-webhook-cert-setup
+        # This is a minimal kubectl image based on Alpine Linux that signs certificates using the k8s extension api server
+        image: lreimer/k8s-webhook-cert-manager:latest
+        command: ["./generate_certificate.sh"]
+        args:
+          - "--type"
+          - "validatingwebhookconfiguration"
+          - "--service"
+          - "validating-admission-service"
+          - "--webhook"
+          - "validating-admission.qaware.de"
+          - "--secret"
+          - "validating-admission-tls-secret"
+          - "--namespace"
+          - "default"
+      restartPolicy: OnFailure
+  backoffLimit: 3

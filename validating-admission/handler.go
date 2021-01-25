@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 
-	"github.com/golang/glog"
-	"k8s.io/api/admission/v1beta1"
+	admissionv1 "k8s.io/api/admission/v1"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -24,53 +24,70 @@ func (vs *ValidatingServerHandler) serve(w http.ResponseWriter, r *http.Request)
 		}
 	}
 	if len(body) == 0 {
-		glog.Error("Empty body")
+		log.Fatalf("Empty body")
 		http.Error(w, "Empty body", http.StatusBadRequest)
 		return
 	}
-	glog.Info("Received request")
+	log.Println("Received request")
 
 	if r.URL.Path != "/validate" {
-		glog.Error("No validate")
-		http.Error(w, "No validate", http.StatusBadRequest)
+		log.Fatalf("No /validate URL called")
+		http.Error(w, "No /validate URL called", http.StatusBadRequest)
 		return
 	}
 
-	arRequest := v1beta1.AdmissionReview{}
+	arRequest := admissionv1.AdmissionReview{}
 	if err := json.Unmarshal(body, &arRequest); err != nil {
-		glog.Error("Incorrect body")
+		log.Fatalf("Incorrect body")
 		http.Error(w, "Incorrect body", http.StatusBadRequest)
 	}
 
 	raw := arRequest.Request.Object.Raw
 	pod := v1.Pod{}
 	if err := json.Unmarshal(raw, &pod); err != nil {
-		glog.Error("Error deserializing pod")
+		log.Fatalf("Error deserializing pod")
 		return
 	}
 
 	// check if there are Liveness and Readiness probes defined
-	if pod.Spec.Containers[0].LivenessProbe != nil && pod.Spec.Containers[0].ReadinessProbe != nil {
-		return
-	}
+	arResponse := admissionv1.AdmissionReview{}
 
-	arResponse := v1beta1.AdmissionReview{
-		Response: &v1beta1.AdmissionResponse{
-			Allowed: false,
-			Result: &metav1.Status{
-				Message: "Readiness and Liveness probes are required.",
+	if pod.Spec.Containers[0].LivenessProbe != nil && pod.Spec.Containers[0].ReadinessProbe != nil {
+		log.Printf("Pod container spec valid.")
+		arResponse = admissionv1.AdmissionReview{
+			TypeMeta: metav1.TypeMeta{
+				Kind:       "AdmissionReview",
+				APIVersion: "admission.k8s.io/v1",
 			},
-		},
+			Response: &admissionv1.AdmissionResponse{
+				UID:     arRequest.Request.UID,
+				Allowed: true,
+			},
+		}
+	} else {
+		log.Printf("Pod container spec invalid.")
+		arResponse = admissionv1.AdmissionReview{
+			TypeMeta: metav1.TypeMeta{
+				Kind:       "AdmissionReview",
+				APIVersion: "admission.k8s.io/v1",
+			},
+			Response: &admissionv1.AdmissionResponse{
+				UID:     arRequest.Request.UID,
+				Allowed: false,
+				Result: &metav1.Status{
+					Message: "Readiness and Liveness probes are required.",
+				},
+			},
+		}
 	}
 
 	resp, err := json.Marshal(arResponse)
 	if err != nil {
-		glog.Errorf("Can't encode response: %v", err)
+		log.Fatalf("Can't encode response: %v", err)
 		http.Error(w, fmt.Sprintf("could not encode response: %v", err), http.StatusInternalServerError)
 	}
-	glog.Infof("Ready to write reponse ...")
 	if _, err := w.Write(resp); err != nil {
-		glog.Errorf("Can't write response: %v", err)
+		log.Fatalf("Can't write response: %v", err)
 		http.Error(w, fmt.Sprintf("could not write response: %v", err), http.StatusInternalServerError)
 	}
 }

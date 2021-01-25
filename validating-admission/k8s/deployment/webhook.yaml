@@ -1,0 +1,25 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: "validating-admission.qaware.de"
+webhooks:
+- name: "validating-admission.qaware.de"
+  # this here is important, 
+  # otherwise the admission webhook pods are not scheduled!
+  objectSelector:
+    matchLabels:    
+      type: "microservice"
+  rules:
+  - apiGroups:   [""]
+    apiVersions: ["v1"]
+    operations:  ["CREATE", "UPDATE"]
+    resources:   ["pods"]
+    scope:       "Namespaced"
+  clientConfig:
+    service:
+      namespace: "default"
+      name: "validating-admission-service"  
+      path: /validate
+  admissionReviewVersions: ["v1", "v1beta1"]
+  sideEffects: None
+  timeoutSeconds: 10
