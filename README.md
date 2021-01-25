@@ -226,22 +226,22 @@ $ kubectl kudo get instances
 # validating admission controller
 $ cd validating-admission
 
-# generate CA and certificates, create as secret (only once)
-$ ./gen_certs.sh
-$ kubectl create secret generic validating-admission-cert -n default --from-file=key.pem=certs/validating-key.pem --from-file=cert.pem=certs/validating-crt.pem
+$ make deploy-all
+$ kubectl get all
 
-$ make deploy
-$ kubectl apply -f manifest.yaml
+$ kubectl deploy -f k8s/examples/nginx-ok.yaml
+$ kubectl deploy -f k8s/examples/nginx-nok.yaml
+$ kubectl delete -f k8s/examples/
 
 # mutating admission controller
 $ cd mutating-admission
 
-# generate CA and certificates, create as secret (only once)
-$ ./gen_certs.sh
-$ kubectl create secret generic mutating-admission-cert -n default --from-file=key.pem=certs/mutating-key.pem --from-file=cert.pem=certs/mutating-crt.pem
+$ make deploy-all
+$ kubectl get all
 
-$ make deploy
-$ kubectl apply -f manifest.yaml
+$ kubectl deploy -f k8s/examples/nginx-ok.yaml
+$ kubectl deploy -f k8s/examples/nginx-nok.yaml
+$ kubectl delete -f k8s/examples/
 ```
 
 ## Maintainer
