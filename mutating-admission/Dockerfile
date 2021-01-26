@@ -1,12 +1,26 @@
-FROM golang:1.15-stretch AS build-env
-RUN mkdir -p /go/src/github.com/lreimer/k8s-experts-day/mutating-admission
-WORKDIR /go/src/github.com/lreimer/k8s-experts-day/mutating-admission
-COPY  . .
-RUN useradd -u 10001 webhook
-RUN CGO_ENABLED=0 GOOS=linux go build -a -ldflags '-extldflags "-static"' -o mutating-admission
+# Builder Image
+FROM golang:1.15.2 as builder
 
-FROM scratch
-COPY --from=build-env /go/src/github.com/lreimer/k8s-experts-day/mutating-admission/mutating-admission .
-COPY --from=build-env /etc/passwd /etc/passwd
-USER webhook
-ENTRYPOINT ["/mutating-admission"]
+# create and set working directory
+RUN mkdir -p /app
+WORKDIR /app
+
+# install dependencies
+ADD go.mod go.mod
+ADD go.sum go.sum
+RUN go mod download
+# add code
+ADD . .
+# build the source
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o webhook
+
+# Final Image
+FROM alpine:3.12
+# add ca-certificates
+RUN apk update && apk --no-cache  add ca-certificates
+# set working directory
+WORKDIR /app
+# copy the binary from builder
+COPY --from=builder /app/webhook ./webhook
+# run the binary
+CMD ["./webhook"]

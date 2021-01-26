@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  labels:
+    type: microservice
+spec:
+  containers:
+  - name: nginx
+    image: nginx:1.19.4-alpine
+    ports:
+      - containerPort: 80

@@ -1,0 +1,26 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: mutating-admission-webhook-cert-setup
+spec:
+  template:
+    spec:
+      serviceAccountName: mutating-admission-webhook-cert-sa
+      containers:
+      - name: mutating-admission-webhook-cert-setup
+        # This is a minimal kubectl image based on Alpine Linux that signs certificates using the k8s extension api server
+        image: lreimer/k8s-webhook-cert-manager:latest
+        command: ["./generate_certificate.sh"]
+        args:
+          - "--type"
+          - "mutatingwebhookconfiguration"
+          - "--service"
+          - "mutating-admission-service"
+          - "--webhook"
+          - "mutating-admission.qaware.de"
+          - "--secret"
+          - "mutating-admission-tls-secret"
+          - "--namespace"
+          - "default"
+      restartPolicy: OnFailure
+  backoffLimit: 3

@@ -226,22 +226,26 @@ $ kubectl kudo get instances
 # validating admission controller
 $ cd validating-admission
 
+$ make docker-build docker-push
 $ make deploy-all
 $ kubectl get all
 
 $ kubectl deploy -f k8s/examples/nginx-ok.yaml
 $ kubectl deploy -f k8s/examples/nginx-nok.yaml
 $ kubectl delete -f k8s/examples/
+$ make undeploy-all
 
 # mutating admission controller
 $ cd mutating-admission
 
+$ make docker-build docker-push
 $ make deploy-all
 $ kubectl get all
 
 $ kubectl deploy -f k8s/examples/nginx-ok.yaml
 $ kubectl deploy -f k8s/examples/nginx-nok.yaml
 $ kubectl delete -f k8s/examples/
+$ make undeploy-all
 ```
 
 ## Maintainer
