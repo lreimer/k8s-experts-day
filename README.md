@@ -210,7 +210,7 @@ $ make undeploy
 $ kubectl krew install kudo
 $ kubectl kudo init --unsafe-self-signed-webhook-ca
 
-$ kubectl kudo install ./nginx-operator
+$ kubectl kudo install ./nginx-kudoperator
 $ kubectl kudo get instances
 ```
 
