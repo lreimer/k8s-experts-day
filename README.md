@@ -2,7 +2,7 @@
 
 Demo repository for the Kubernetes Experts Day session at ContainerConf 2020/21.
 
-## Declarative Management of Kubernetes Objects Using Kustomize
+## Declarative Management of K8s Objects Using Kustomize
 
 ```bash
 # see https://kustomize.io
@@ -17,7 +17,7 @@ $ kubectl apply -k kustomized/overlays/int/
 $ kubectl delete -k kustomized/overlays/int/
 ```
 
-## Imperative Management of Kubernetes Objects Using Pulumi
+## Imperative Management of K8s Objects Using Pulumi
 
 ```bash
 # see https://www.pulumi.com/docs/get-started/kubernetes/
@@ -45,29 +45,13 @@ $ cp ../nginx-deployment.yaml .
 $ kube2pulumi go -f nginx-deployment.yaml
 ```
 
-## Using Kubernetes for CI/CD
+## Using Kubernetes for Local Development and CI/CD
 
 ```bash
-# Continuous Load Testing with K6 on Kubernetes
-# see https://github.com/lreimer/continuous-k6k8s
+# cloud native development environment with GitPod
+# see https://www.gitpod.io
 
-# next you can deploy the K6 stack with InfluxDB and Grafana
-$ kubectl apply -f continuous-k6k8s.yaml
-
-# open Grafana and import on of these K6 load test dashboards
-# - see https://grafana.com/dashboards/2587
-# - see https://grafana.com/grafana/dashboards/4411
-$ open http://localhost:3000
-
-# run adhoc tests as a simple pod
-# be sure to pass the --restart flag, otherwise the containers gets restarted
-$ kubectl run k6-nginx-test --image lreimer/k6-nginx-test --restart=Never --attach
-$ kubectl delete pod/k6-nginx-test
-
-# Continuous Security Tests with ZAP on Kubernetes
-# https://github.com/lreimer/continuous-zapk8s
-
-# Cloud Native CI/CD with Tekton
+# easy Cloud Native CI/CD with Tekton
 # see https://tekton.dev
 $ kubectl apply -f https://storage.googleapis.com/tekton-releases/pipeline/latest/release.yaml
 $ kubectl apply -f https://github.com/tektoncd/dashboard/releases/latest/download/tekton-dashboard-release.yaml
@@ -91,6 +75,15 @@ $ kubectl tkn pipelinerun logs --last -f
 # use Tekton triggers to run pipelines
 # see https://tekton.dev/docs/triggers/install/
 # see https://github.com/tektoncd/triggers/tree/v0.9.1/docs/getting-started
+
+# Continuous Load Testing with K6 on Kubernetes
+# see https://github.com/lreimer/continuous-k6k8s
+
+# Continuous Security Tests with ZAP on Kubernetes
+# https://github.com/lreimer/continuous-zapk8s
+
+# Continuous Browser Automation with Geb on Kubernetes
+# https://github.com/lreimer/continuous-atdd
 ```
 
 ## Using the Kubernetes API on the CLI
@@ -142,6 +135,40 @@ $ curl -X GET $APISERVER/api --header "Authorization: Bearer $TOKEN" --insecure
 $ cd event-watcher-java/
 $ ./gradlew clean ass
 $ ./gradlew run
+```
+
+## Developing Admission Controllers
+
+![](https://d33wubrfki0l68.cloudfront.net/af21ecd38ec67b3d81c1b762221b4ac777fcf02d/7c60e/images/blog/2019-03-21-a-guide-to-kubernetes-admission-controllers/admission-controller-phases.png)
+
+```bash
+# see https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/
+# see https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/
+# see https://kubernetes.io/blog/2019/03/21/a-guide-to-kubernetes-admission-controllers/
+
+# validating admission controller
+$ cd validating-admission
+
+$ make docker-build docker-push
+$ make deploy-all
+$ kubectl get all
+
+$ kubectl deploy -f k8s/examples/nginx-ok.yaml
+$ kubectl deploy -f k8s/examples/nginx-nok.yaml
+$ kubectl delete -f k8s/examples/
+$ make undeploy-all
+
+# mutating admission controller
+$ cd mutating-admission
+
+$ make docker-build docker-push
+$ make deploy-all
+$ kubectl get all
+
+$ kubectl deploy -f k8s/examples/nginx-ok.yaml
+$ kubectl deploy -f k8s/examples/nginx-nok.yaml
+$ kubectl delete -f k8s/examples/
+$ make undeploy-all
 ```
 
 ## Defining and Using Custom Resources in Kubernetes
@@ -212,40 +239,6 @@ $ kubectl kudo init --unsafe-self-signed-webhook-ca
 
 $ kubectl kudo install ./nginx-kudoperator
 $ kubectl kudo get instances
-```
-
-## Developing Admission Controllers
-
-![](https://d33wubrfki0l68.cloudfront.net/af21ecd38ec67b3d81c1b762221b4ac777fcf02d/7c60e/images/blog/2019-03-21-a-guide-to-kubernetes-admission-controllers/admission-controller-phases.png)
-
-```bash
-# see https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/
-# see https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/
-# see https://kubernetes.io/blog/2019/03/21/a-guide-to-kubernetes-admission-controllers/
-
-# validating admission controller
-$ cd validating-admission
-
-$ make docker-build docker-push
-$ make deploy-all
-$ kubectl get all
-
-$ kubectl deploy -f k8s/examples/nginx-ok.yaml
-$ kubectl deploy -f k8s/examples/nginx-nok.yaml
-$ kubectl delete -f k8s/examples/
-$ make undeploy-all
-
-# mutating admission controller
-$ cd mutating-admission
-
-$ make docker-build docker-push
-$ make deploy-all
-$ kubectl get all
-
-$ kubectl deploy -f k8s/examples/nginx-ok.yaml
-$ kubectl deploy -f k8s/examples/nginx-nok.yaml
-$ kubectl delete -f k8s/examples/
-$ make undeploy-all
 ```
 
 ## Maintainer
