@@ -153,9 +153,9 @@ $ make docker-build docker-push
 $ make deploy-all
 $ kubectl get all
 
-$ kubectl deploy -f k8s/examples/nginx-ok.yaml
-$ kubectl deploy -f k8s/examples/nginx-nok.yaml
-$ kubectl delete -f k8s/examples/
+$ kubectl apply -f k8s/examples/nginx-ok.yaml
+$ kubectl apply -f k8s/examples/nginx-nok.yaml
+$ kubectl apply -f k8s/examples/
 $ make undeploy-all
 
 # mutating admission controller
@@ -165,9 +165,9 @@ $ make docker-build docker-push
 $ make deploy-all
 $ kubectl get all
 
-$ kubectl deploy -f k8s/examples/nginx-ok.yaml
-$ kubectl deploy -f k8s/examples/nginx-nok.yaml
-$ kubectl delete -f k8s/examples/
+$ kubectl apply -f k8s/examples/nginx-ok.yaml
+$ kubectl apply -f k8s/examples/nginx-nok.yaml
+$ kubectl apply -f k8s/examples/
 $ make undeploy-all
 ```
 
@@ -202,7 +202,7 @@ $ curl -X GET $APISERVER/apis/k8s.qaware.de/v1alpha1/watch/supersecrets
 
 # create operator project using SDK
 $ mkdir -p operator-demo && cd operator-demo
-$ operator-sdk init --project-version="2" --domain qaware.de --license none --owner "Mario-Leander Reimer" --plugins go.kubebuilder.io/v2 --repo github.com/lreimer/k8s-experts-day/operator-demo
+$ operator-sdk init --project-version="3-alpha" --domain qaware.de --license none --owner "Mario-Leander Reimer" --plugins go.kubebuilder.io/v3 --repo github.com/lreimer/k8s-experts-day/operator-demo
 $ operator-sdk create api --group k8s --version v1 --kind Demo --resource=true --controller=true
 
 # build and install CRD
