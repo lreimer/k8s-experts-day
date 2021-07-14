@@ -165,8 +165,7 @@ $ make docker-build docker-push
 $ make deploy-all
 $ kubectl get all
 
-$ kubectl apply -f k8s/examples/nginx-ok.yaml
-$ kubectl apply -f k8s/examples/nginx-nok.yaml
+$ kubectl apply -f k8s/examples/nginx-pod.yaml
 $ kubectl apply -f k8s/examples/
 $ make undeploy-all
 ```
