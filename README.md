@@ -1,6 +1,6 @@
 # Kubernetes Experts Day
 
-Demo repository for the Kubernetes Experts Day session at ContainerConf 2020/21.
+Demo repository for my Kubernetes Experts Day sessions.
 
 ## Declarative Management of K8s Objects Using Kustomize
 
@@ -89,7 +89,7 @@ $ kubectl tkn pipelinerun logs --last -f
 ## Using the Kubernetes API on the CLI
 
 ```bash
-# see https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.19/
+# see https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.21/
 
 $ kubectl get events
 $ kubectl get events -o json
