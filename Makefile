@@ -17,7 +17,7 @@ cluster:
 	@echo "Create GKE Cluster"
 	# --[no-]enable-basic-auth --[no-]issue-client-certificate
 
-	@$(GCP) container clusters create $(NAME) --num-nodes=5 --enable-autoscaling --min-nodes=5 --max-nodes=10
+	@$(GCP) container clusters create $(NAME) --num-nodes=5 --enable-autoscaling --min-nodes=5 --max-nodes=10 --no-enable-autoupgrade
 	@$(K8S) create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user=$$(gcloud config get-value core/account)
 	@$(K8S) cluster-info
 
