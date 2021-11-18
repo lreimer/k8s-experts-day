@@ -6,3 +6,4 @@ resources:
   - tekton/
   - linkerd/
   - pulumi/
+  - crossplane/
