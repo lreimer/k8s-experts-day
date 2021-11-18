@@ -1,0 +1,28 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta1
+kind: Kustomization
+metadata:
+  name: pulumi-kubernetes-operator-crds
+  namespace: flux-system
+spec:
+  interval: 5m0s
+  sourceRef:
+    kind: GitRepository
+    name: pulumi-kubernetes-operator
+  path: ./deploy/crds
+  prune: true
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta1
+kind: Kustomization
+metadata:
+  name: pulumi-kubernetes-operator-yaml
+  namespace: flux-system
+spec:
+  interval: 5m0s
+  dependsOn:
+    - name: pulumi-kubernetes-operator-crds
+  sourceRef:
+    kind: GitRepository
+    name: pulumi-kubernetes-operator
+  path: ./deploy/yaml
+  prune: true
+  validation: client
