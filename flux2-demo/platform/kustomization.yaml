@@ -7,3 +7,4 @@ resources:
   - linkerd/
   - pulumi/
   - crossplane/
+  - kube-prometheus/
