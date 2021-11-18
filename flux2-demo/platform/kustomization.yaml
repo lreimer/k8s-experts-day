@@ -5,4 +5,4 @@ resources:
   - sealed-secrets/
   - tekton/
   - linkerd/
-  # - pulumi/
+  - pulumi/
