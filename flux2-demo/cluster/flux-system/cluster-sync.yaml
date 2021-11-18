@@ -19,7 +19,7 @@ metadata:
 spec:
   interval: 5m0s
   dependsOn:
-    - name: infrastructure
+    - name: platform
   sourceRef:
     kind: GitRepository
     name: flux-system
