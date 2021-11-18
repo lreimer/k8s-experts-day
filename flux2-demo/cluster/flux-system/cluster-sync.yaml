@@ -8,7 +8,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./infrastructure
+  path: ./flux2-demo/infrastructure
   prune: true
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1beta1
@@ -23,6 +23,6 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./applications
+  path: ./flux2-demo/applications
   prune: true
   validation: client
