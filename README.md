@@ -51,6 +51,22 @@ $ kube2pulumi go -f nginx-deployment.yaml
 # define required ENV variables for the next steps to work
 $ export GITHUB_TOKEN=<your-token>
 $ make flux-bootstrap
+
+# now active the additional addons in ./flux2-demo/cluster/flux-system
+# - cluster-sync.yaml
+# - notification-receiver.yaml
+# - receiver-service.yaml
+# - webhook-token.yaml
+# - image-update-automation.yaml
+
+# you also need to create the webhook for the Git Repository
+# Payload URL: http://<LoadBalancerAddress>/<ReceiverURL>
+# Secret: the webhook-token value
+$ kubectl -n flux-system get svc/receiver
+$ kubectl -n flux-system get receiver/webapp
+
+# enter the K8s dashboard
+kubectl -n kubernetes-dashboard get secret $(kubectl -n kubernetes-dashboard get sa/admin-user -o jsonpath="{.secrets[0].name}") -o go-template="{{.data.token | base64decode}}"
 ```
 
 ## Using Kubernetes for Local Development and CI/CD
