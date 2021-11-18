@@ -45,6 +45,14 @@ $ cp ../nginx-deployment.yaml .
 $ kube2pulumi go -f nginx-deployment.yaml
 ```
 
+## Using Kubernetes for GitOps with Flux2
+
+```bash
+# define required ENV variables for the next steps to work
+$ export GITHUB_TOKEN=<your-token>
+$ make flux-bootstrap
+```
+
 ## Using Kubernetes for Local Development and CI/CD
 
 ```bash
