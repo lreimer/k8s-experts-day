@@ -1,5 +1,6 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
+  - pulumi-namespace.yaml
   - pulumi-source.yaml
   - pulumi-install.yaml

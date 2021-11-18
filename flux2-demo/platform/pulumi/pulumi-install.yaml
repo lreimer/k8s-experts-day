@@ -9,6 +9,7 @@ spec:
     kind: GitRepository
     name: pulumi-kubernetes-operator
   path: ./deploy/crds
+  targetNamespace: pulumi-system
   prune: true
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1beta1
@@ -24,5 +25,6 @@ spec:
     kind: GitRepository
     name: pulumi-kubernetes-operator
   path: ./deploy/yaml
+  targetNamespace: pulumi-system
   prune: true
   validation: client
