@@ -10,6 +10,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: openvscode-server
+  namespace: openvscode-server
 spec:
   type: LoadBalancer
   sessionAffinity: ClientIP
@@ -26,6 +27,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: openvscode-server
+  namespace: openvscode-server
 spec:
   selector:
     matchLabels:
