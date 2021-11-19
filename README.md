@@ -1,6 +1,6 @@
 # Kubernetes Experts Day
 
-Demo repository for my Kubernetes Experts Day sessions.
+Demo repository for with advanced Kubernetes showcases: K8s as Cloud-native software delivery platform, GitOps, admission controllers, CRDs, operators.
 
 ## Declarative Management of K8s Objects Using Kustomize
 
