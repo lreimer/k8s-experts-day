@@ -5,6 +5,7 @@ resources:
   - sealed-secrets/
   - tekton/
   - linkerd/
+  - emissary/
   - pulumi/
   - crossplane/
   - kube-prometheus/

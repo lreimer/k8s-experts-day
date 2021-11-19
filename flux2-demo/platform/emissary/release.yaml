@@ -1,0 +1,15 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: emissary-ingress
+  namespace: flux-system
+spec:
+  chart:
+    spec:
+      chart: emissary-ingress
+      sourceRef:
+        kind: HelmRepository
+        name: datawire
+  interval: 1h0m0s
+  releaseName: emissary-ingress
+  targetNamespace: emissary
