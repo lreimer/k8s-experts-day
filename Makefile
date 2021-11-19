@@ -18,7 +18,7 @@ cluster:
 	@echo "Create GKE Cluster"
 	# --[no-]enable-basic-auth --[no-]issue-client-certificate
 
-	@$(GCP) container clusters create $(NAME) --num-nodes=5 --enable-autoscaling --min-nodes=5 --max-nodes=10 --no-enable-autoupgrade
+	@$(GCP) container clusters create $(NAME)-qatalk --num-nodes=6 --enable-autoscaling --min-nodes=5 --max-nodes=10 --no-enable-autoupgrade
 	@$(K8S) create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user=$$(gcloud config get-value core/account)
 	@$(K8S) cluster-info
 
@@ -27,7 +27,7 @@ flux-bootstrap:
 		--owner=$(GITHUB_USER) \
   		--repository=$(NAME) \
   		--branch=main \
-  		--path=./flux2-demo/cluster \
+  		--path=./flux2-demo/cluster-qatalk \
 		--components-extra=image-reflector-controller,image-automation-controller \
 		--read-write-key \
   		--personal
@@ -39,4 +39,4 @@ access-token:
 	@$(GCP) config config-helper --format=json | jq .credential.access_token
 
 destroy:
-	@$(GCP) container clusters delete $(NAME) --async --quiet
+	@$(GCP) container clusters delete $(NAME)-qatalk --async --quiet
