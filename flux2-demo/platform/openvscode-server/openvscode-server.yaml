@@ -1,0 +1,50 @@
+---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: openvscode-server
+  annotations:
+    linkerd.io/inject: disabled
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: openvscode-server
+spec:
+  type: LoadBalancer
+  sessionAffinity: ClientIP
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 3600
+  ports:
+    - port: 3000
+      protocol: TCP
+  selector:
+    app: openvscode-server
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openvscode-server
+spec:
+  selector:
+    matchLabels:
+      app: openvscode-server
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: openvscode-server
+    spec:
+      containers:
+      - name: openvscode-server
+        image: gitpod/openvscode-server
+        resources:
+          requests:
+            cpu: "250m"
+            memory: "64Mi"
+          limits:  
+            cpu: "500m"
+            memory: "256Mi"
+        ports:
+        - containerPort: 3000

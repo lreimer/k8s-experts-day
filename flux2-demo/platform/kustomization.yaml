@@ -8,3 +8,4 @@ resources:
   - pulumi/
   - crossplane/
   - kube-prometheus/
+  - openvscode-server/
